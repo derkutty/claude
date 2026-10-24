@@ -84,13 +84,14 @@ def write_release(short, description: str, now: datetime) -> None:
     (out / "notes.md").write_text(
         "So lädst du dieses Short hoch:\n\n"
         "1. Unten bei **Assets** auf **short.mp4** tippen und speichern.\n"
-        "2. In der YouTube-App auf **+** → **Short** → **Hochladen** und das Video auswählen.\n"
-        "3. Titel und Beschreibung unten kopieren und einfügen. **Den Titel bitte genau so lassen**, "
-        "sonst findet der Bot das Video nicht und kann nicht daraus lernen.\n"
-        "4. Zielgruppe: **Nein, nicht speziell für Kinder**. Dann **Hochladen**.\n\n"
+        "2. YouTube-App: **+** → **Short** → Video auswählen.\n"
+        "3. **Titel** von unten einfügen und **genau so lassen** – daran erkennt der Bot das Video wieder.\n"
+        "4. **Zielgruppe auswählen** → **Nein, nicht speziell für Kinder** → **Short hochladen**.\n"
+        "5. Danach in der App **YouTube Studio**: Inhalte → das Short → Bearbeiten (Stift) → "
+        "**Beschreibung** von unten einfügen → Speichern.\n\n"
         f"**Titel**\n{fence}\n{short.title}\n{fence}\n\n"
         f"**Beschreibung**\n{fence}\n{description}\n{fence}\n\n"
-        f"**Tags** (optional, in YouTube Studio unter „Mehr Optionen“)\n{fence}\n{', '.join(short.tags)}\n{fence}\n",
+        f"**Tags** (optional, bei Shorts kaum wichtig)\n{fence}\n{', '.join(short.tags)}\n{fence}\n",
         encoding="utf-8",
     )
 
