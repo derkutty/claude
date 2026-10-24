@@ -34,7 +34,11 @@ Das ist **nicht** dasselbe wie ein Claude-Abo. Die API wird pro Nutzung bezahlt,
 4. Den Schlüssel (beginnt mit `sk-ant-`) **sofort** kopieren und in deine Notiz schreiben als
    `ANTHROPIC_API_KEY`. Er wird nur einmal angezeigt.
 
-### Schritt 3: Pexels-Zugang (für das Fakten-Format, kostenlos)
+### Schritt 3: Pexels-Zugang (optional, nur für das Fakten-Format)
+Standardmäßig laufen nur die beiden Rätsel-Formate, die brauchen Pexels nicht. Falls Pexels gerade keine
+Schlüssel ausgibt, diesen Schritt einfach überspringen und das Secret `PEXELS_API_KEY` weglassen.
+Wer das Fakten-Format nutzen will, trägt danach in `config.toml` bei `formats` zusätzlich `"fakten"` ein.
+
 1. Auf <https://www.pexels.com/de-de/join/> ein Konto anlegen.
 2. <https://www.pexels.com/api/> öffnen → **Your API Key** → kurzes Formular ausfüllen
    (Zweck z. B. „YouTube-Shorts mit Stock-Videos“).
