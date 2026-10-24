@@ -45,18 +45,21 @@ demselben Jahr, damit der Vergleich fair ist.
 Antworte mit deinen Ergebnissen als Notizen: Thema, Art, Frage, für jedes Land den Wert (mit Einheit \
 und Jahr) bzw. die Ausprägung, einen kurzen überraschenden Fakt, und die Quellen-URLs."""
 
-SYSTEM = """Du machst aus Recherche-Notizen das Skript für ein Länder-Short.
+SYSTEM = """Du machst aus Recherche-Notizen das Skript für ein Länder-Short. Das ganze Video soll etwa \
+30 Sekunden dauern – kurze Shorts werden öfter bis zum Ende geschaut, und das belohnt der Algorithmus. \
+Jedes Wort, das nicht nötig ist, fliegt raus.
 
-- hook: höchstens 9 Wörter, macht neugierig auf das Ergebnis ("Platz eins hätte ich nie erwartet!").
+- hook: höchstens 7 Wörter, macht neugierig auf das Ergebnis ("Platz eins hätte ich nie erwartet!").
 - question: die Frage, die oben im Video steht, höchstens 8 Wörter.
 - items: in der Reihenfolge, in der sie gezeigt werden. Bei "ranking" zuerst der letzte Platz, zum \
 Schluss Platz 1 – so bleibt es spannend.
-- spoken: was zu diesem Land gesprochen wird, höchstens 18 Wörter, natürlich und lebendig. Bei \
-"ranking" nennt der Satz Platz, Land und Wert; Zahlen so schreiben, wie man sie spricht.
-- fact: ein kurzer überraschender Satz (höchstens 12 Wörter), der unter der Zahl angezeigt wird.
+- spoken: was zu diesem Land gesprochen wird, höchstens 10 Wörter, natürlich und lebendig, z. B. \
+"Platz drei: Japan mit eintausendsechshundert Stunden." Bei "ranking" nennt der Satz Platz, Land und Wert; \
+Zahlen so schreiben, wie man sie spricht. Den Fakt nicht vorlesen – der steht im Bild.
+- fact: ein kurzer überraschender Satz (höchstens 10 Wörter), der unter der Zahl angezeigt wird.
 - headline: bei "vergleich" die Ausprägung in 1–4 Wörtern (wird groß angezeigt); bei "ranking" leer lassen.
 - value: bei "ranking" die Zahl (ohne Einheit); bei "vergleich" 0.
-- outro: fordert auf zu kommentieren, z. B. "Hättest du das gedacht? Schreib's in die Kommentare!"
+- outro: höchstens 8 Wörter, fordert auf zu kommentieren, z. B. "Hättest du das gedacht? Ab in die Kommentare!"
 - sources: nur URLs aus den Notizen.
 Übernimm nur Zahlen und Fakten, die in den Notizen stehen."""
 
@@ -115,7 +118,9 @@ def _write(cfg: dict, history: list[dict]) -> dict:
     for _ in range(2):
         data = ask_json(SYSTEM, prompt, SCHEMA)
         items = data["items"]
-        if len(items) == n and all(len(i["iso2"]) == 2 and i["iso2"].isalpha() for i in items):
+        # Zu lange Sätze machen das Video zäh – dann lieber noch einmal schreiben lassen.
+        short_enough = all(len(i["spoken"].split()) <= 14 for i in items) and len(data["hook"].split()) <= 10
+        if len(items) == n and short_enough and all(len(i["iso2"]) == 2 and i["iso2"].isalpha() for i in items):
             return data
     raise RuntimeError("Claude hat kein gültiges Länder-Skript geliefert.")
 
@@ -143,13 +148,14 @@ def create(cfg: dict, history: list[dict], workdir: Path) -> Short:
     audio = voice.synthesize_scenes(speeches, cfg["voice"], workdir)
     sfx = render.make_sfx(workdir)
 
-    plan = [({"scene": "intro"}, audio[0].duration + 0.5, [(audio[0].path, 0.1), (sfx["whoosh"], 0.0)])]
+    # Knappe Pausen: Ziel sind ~30 Sekunden (Intro ~2,5 s, je Land ~4 s, Rangliste ~3,5 s).
+    plan = [({"scene": "intro"}, audio[0].duration + 0.3, [(audio[0].path, 0.1), (sfx["whoosh"], 0.0)])]
     for k in range(n):
         a = audio[k + 1]
-        plan.append(({"scene": "item", "index": k}, max(3.4, a.duration + 0.9),
+        plan.append(({"scene": "item", "index": k}, max(3.0, a.duration + 0.6),
                      [(sfx["whoosh"], 0.0), (a.path, 0.25), (sfx["ding"], 1.25)]))
     a = audio[-1]
-    plan.append(({"scene": "outro"}, max(4.5, a.duration + 1.4), [(a.path, 0.6)]))
+    plan.append(({"scene": "outro"}, max(3.5, a.duration + 0.9), [(a.path, 0.4)]))
 
     segments, start = [], 0.0
     with web.page(html, video_cfg) as pg:
