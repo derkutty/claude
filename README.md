@@ -19,7 +19,7 @@ Stand siehst du jederzeit in [`data/report.md`](data/report.md).
 ## Einrichtung Schritt für Schritt
 
 Du brauchst nichts zu installieren, alles passiert im Browser. Plane etwa 45 Minuten ein.
-Halte eine Notiz-App offen: Du sammelst unterwegs **fünf geheime Werte**, die am Ende bei GitHub eingetragen werden.
+Halte eine Notiz-App offen: Du sammelst unterwegs **vier bis fünf geheime Werte**, die am Ende bei GitHub eingetragen werden.
 
 ### Schritt 1: YouTube-Kanal anlegen
 1. Auf <https://www.youtube.com> mit deinem Google-Konto anmelden.
@@ -89,7 +89,7 @@ Das ist der längste Schritt. Google will wissen, welches Programm in deinem Nam
 | Name | Wert aus |
 |---|---|
 | `ANTHROPIC_API_KEY` | Schritt 2 |
-| `PEXELS_API_KEY` | Schritt 3 |
+| `PEXELS_API_KEY` | Schritt 3 (optional, darf fehlen) |
 | `YOUTUBE_CLIENT_ID` | Schritt 4d |
 | `YOUTUBE_CLIENT_SECRET` | Schritt 4d |
 | `YOUTUBE_REFRESH_TOKEN` | Schritt 4e |
