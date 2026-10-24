@@ -87,17 +87,73 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return out
 
 
+def pick_music(music_dir: Path) -> Path | None:
+    if not music_dir.exists():
+        return None
+    music = sorted(p for p in music_dir.glob("*") if p.suffix.lower() in {".mp3", ".m4a", ".wav", ".ogg"})
+    return random.choice(music) if music else None
+
+
+def make_sfx(workdir: Path) -> dict[str, Path]:
+    """Ticken für den Countdown und ein 'Ding' für die Auflösung, direkt mit ffmpeg erzeugt."""
+    sounds = {
+        "tick": "sine=frequency=1100:duration=0.06,afade=t=out:st=0.02:d=0.04,volume=0.5",
+        "ding": "sine=frequency=1320:duration=0.5,afade=t=out:st=0.05:d=0.45,volume=0.6",
+        "whoosh": "anoisesrc=d=0.35:c=pink:a=0.25,highpass=f=800,afade=t=in:d=0.1,afade=t=out:st=0.1:d=0.25",
+    }
+    out = {}
+    for name, graph in sounds.items():
+        path = workdir / f"sfx_{name}.wav"
+        run(["ffmpeg", "-y", "-f", "lavfi", "-i", graph, "-ar", "48000", "-ac", "2", str(path)])
+        out[name] = path
+    return out
+
+
+def segment(image: Path, duration: float, sounds: list[tuple[Path, float]], video_cfg: dict, out: Path) -> Path:
+    """Ein Standbild mit Ton (Liste aus (Datei, Startzeit)) als exakt `duration` Sekunden langes Stück."""
+    fps = video_cfg["fps"]
+    cmd = ["ffmpeg", "-y", "-loop", "1", "-framerate", str(fps), "-t", f"{duration:.3f}", "-i", str(image),
+           "-f", "lavfi", "-t", f"{duration:.3f}", "-i", "anullsrc=r=48000:cl=stereo"]
+    chains, labels = [], ["[1:a]"]
+    for i, (path, delay) in enumerate(sounds):
+        cmd += ["-i", str(path)]
+        ms = int(delay * 1000)
+        chains.append(f"[{i + 2}:a]aresample=48000,aformat=channel_layouts=stereo,adelay={ms}|{ms}[s{i}]")
+        labels.append(f"[s{i}]")
+    graph = ";".join(chains + [f"{''.join(labels)}amix=inputs={len(labels)}:duration=first:normalize=0[a]"])
+    cmd += ["-filter_complex", graph, "-map", "0:v", "-map", "[a]",
+            "-pix_fmt", "yuv420p", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-tune", "stillimage",
+            "-r", str(fps), "-c:a", "aac", "-b:a", "192k", "-ar", "48000", str(out)]
+    run(cmd)
+    return out
+
+
+def concat_segments(segments: list[Path], music_dir: Path, video_cfg: dict, out: Path) -> Path:
+    """Fertige Stücke aneinanderhängen und leise Hintergrundmusik darunterlegen."""
+    concat_list = out.parent / "segments.txt"
+    concat_list.write_text("".join(f"file '{p.resolve()}'\n" for p in segments), encoding="utf-8")
+    cmd = ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(concat_list)]
+    music = pick_music(music_dir)
+    if music:
+        cmd += ["-stream_loop", "-1", "-i", str(music), "-filter_complex",
+                f"[1:a]volume={video_cfg['music_volume']}[m];[0:a][m]amix=inputs=2:duration=first:normalize=0[a]",
+                "-map", "0:v", "-map", "[a]"]
+    cmd += ["-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", str(out)]
+    run(cmd)
+    return out
+
+
 def assemble(scene_videos: list[Path], voice: Path, captions: Path, music_dir: Path, fonts_dir: Path,
              video_cfg: dict, out: Path) -> Path:
     workdir = out.parent
     concat_list = workdir / "scenes.txt"
     concat_list.write_text("".join(f"file '{p.resolve()}'\n" for p in scene_videos), encoding="utf-8")
 
-    music = sorted(p for p in music_dir.glob("*") if p.suffix.lower() in {".mp3", ".m4a", ".wav", ".ogg"}) if music_dir.exists() else []
+    music = pick_music(music_dir)
     cmd = ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(concat_list), "-i", str(voice)]
     vf = f"[0:v]subtitles={captions.name}:fontsdir={fonts_dir.resolve()}[v]"
     if music:
-        cmd += ["-stream_loop", "-1", "-i", str(random.choice(music))]
+        cmd += ["-stream_loop", "-1", "-i", str(music)]
         af = f"[2:a]volume={video_cfg['music_volume']}[m];[1:a][m]amix=inputs=2:duration=first:normalize=0[a]"
     else:
         af = "[1:a]anull[a]"

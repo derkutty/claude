@@ -2,22 +2,40 @@
 # Alles hier kann ohne Code-Änderung angepasst werden.
 
 [channel]
-# Worum geht es im Kanal? Je enger die Nische, desto besser lernt der Algorithmus,
-# wem er die Videos zeigen soll.
-niche = "Verblüffende Fakten über Psychologie, den menschlichen Körper und die Natur"
 # Sprache der Videos (Skript, Titel, Beschreibung).
 language = "Deutsch"
 # Zielgruppe in einem Satz – hilft beim Ton.
-audience = "Neugierige 16- bis 35-Jährige, die beim Scrollen hängen bleiben wollen"
-# Feste Hashtags, die an jede Beschreibung angehängt werden.
-hashtags = ["#shorts", "#fakten", "#wissen"]
+audience = "Neugierige 14- bis 35-Jährige, die beim Scrollen gern miträtseln und Neues lernen"
+# Hashtags, die an jede Beschreibung angehängt werden (plus die des jeweiligen Formats).
+hashtags = ["#shorts"]
 
-[script]
+[experiment]
+# Diese Formate werden gegeneinander getestet. Wenn du dich festgelegt hast,
+# trag nur noch eins ein, z. B. formats = ["quiz"].
+formats = ["quiz", "emoji", "fakten"]
+# So viele Videos pro Format müssen 3 Tage online sein, bevor ausgewertet wird.
+# Bei 2 Videos am Tag und 3 Formaten dauert die Testphase damit etwa 2 Wochen.
+min_videos_per_format = 6
+# Nach der Testphase: Anteil der Uploads, der weiter die anderen Formate testet.
+explore_share = 0.2
+
+[formats.quiz]
+themes = "Allgemeinwissen: Tiere, Geografie, menschlicher Körper, Geschichte, Weltraum, Essen, Sprache"
+questions = 3
+countdown_seconds = 4
+hashtags = ["#quiz", "#allgemeinwissen", "#rätsel"]
+
+[formats.emoji]
+themes = "Bekannte Filme, Disney-Filme, Serien, Märchen, deutsche Sprichwörter, Songs, Marken"
+puzzles = 4
+countdown_seconds = 4
+hashtags = ["#emojichallenge", "#rätsel", "#errätstdues"]
+
+[formats.fakten]
+themes = "Verblüffende Fakten über Psychologie, den menschlichen Körper, Tiere und die Natur"
 # Ziel-Länge in Sekunden. 25–40 s funktioniert für Fakten-Shorts am besten.
 target_seconds = 35
-# Wie viele frühere Videos (beste und schlechteste nach Aufrufen) Claude als
-# Feedback bekommt, damit die nächsten Ideen besser werden.
-feedback_videos = 5
+hashtags = ["#fakten", "#wissen", "#wusstestdu"]
 
 [voice]
 # Kostenlose Microsoft-Edge-Stimmen. Liste: `edge-tts --list-voices`
@@ -30,13 +48,13 @@ rate = "+12%"
 width = 1080
 height = 1920
 fps = 30
-# Schriftart für die Untertitel. Eigene .ttf/.otf-Dateien in assets/fonts/ legen
-# und hier den Schriftnamen eintragen (z. B. "Montserrat ExtraBold").
+# Schriftart. Eigene .ttf/.otf-Datei in assets/fonts/ legen und hier ihren Namen
+# eintragen (z. B. "Montserrat ExtraBold").
 font = "DejaVu Sans"
+# Untertitel beim Fakten-Format.
 font_size = 92
-# Wie viele Wörter gleichzeitig eingeblendet werden.
 words_per_caption = 2
-# Hintergrundmusik: beliebige lizenzfreie .mp3-Dateien in assets/music/ legen.
+# Hintergrundmusik: lizenzfreie .mp3-Dateien in assets/music/ legen.
 # Pro Video wird zufällig eine gewählt. Lautstärke relativ zur Stimme.
 music_volume = 0.10
 
@@ -48,6 +66,6 @@ category_id = "27"
 # Sprache als BCP-47-Code für YouTube.
 language_code = "de"
 # Kennzeichnung "verändert oder synthetisch erzeugt". YouTube verlangt das für
-# realistisch wirkende KI-Inhalte; eine KI-Stimme über echten Stock-Clips
-# fällt normalerweise nicht darunter. Im Zweifel auf true setzen.
+# realistisch wirkende KI-Inhalte; eine KI-Stimme über Grafiken oder echten
+# Stock-Clips fällt normalerweise nicht darunter. Im Zweifel auf true setzen.
 contains_synthetic_media = false
