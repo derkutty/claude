@@ -5,9 +5,10 @@ Dabei testet er drei Formate gegeneinander und konzentriert sich danach auf das 
 
 | Format | Was passiert | Wer erstellt es |
 |---|---|---|
+| **Länder-Check** | Ranking oder Vergleich von 5 Ländern mit Flaggen, hochzählenden Zahlen und Balken | Claude recherchiert die Zahlen im Internet und schreibt das Skript; die Animation ist eine Webseite, die Chromium aufnimmt; Quellen stehen in der Beschreibung |
 | **Quiz-Rätsel** | 3 Fragen mit je 3 Antworten, Countdown, Auflösung | Claude schreibt alles, das Programm zeichnet das Bild |
 | **Emoji-Rätsel** | 4 Filme/Sprichwörter aus Emojis erraten | Claude schreibt alles, das Programm zeichnet das Bild |
-| **Fakten mit Videoclips** | Sprecher erzählt verblüffende Fakten zu echten Videoclips | Claude schreibt, die Clips kommen von Pexels |
+| **Fakten mit Videoclips** (aus) | Sprecher erzählt verblüffende Fakten zu echten Videoclips | Claude schreibt, die Clips kommen von Pexels; braucht einen Pexels-Schlüssel |
 
 **So funktioniert der Test:** Die ersten ~2 Wochen wechseln sich die Formate ab. Für jedes Video zählt die
 Aufrufzahl **3 Tage nach dem Upload**, damit ältere Videos keinen Vorteil haben. Sobald jedes Format 6

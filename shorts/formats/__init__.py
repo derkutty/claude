@@ -16,5 +16,5 @@ class Short:
 
 
 def registry() -> dict:
-    from . import emoji, facts, quiz
-    return {m.NAME: m for m in (quiz, emoji, facts)}
+    from . import emoji, facts, laender, quiz
+    return {m.NAME: m for m in (laender, quiz, emoji, facts)}

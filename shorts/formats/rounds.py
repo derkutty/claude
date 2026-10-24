@@ -27,7 +27,7 @@ def build(intro_speech: str, draw_intro: Draw, rounds: list[Round], outro_speech
     for r in rounds:
         speeches += [r.question_speech, r.answer_speech]
     speeches.append(outro_speech)
-    audio = iter(voice.synthesize_scenes(speeches, cfg["voice"]["name"], cfg["voice"]["rate"], workdir))
+    audio = iter(voice.synthesize_scenes(speeches, cfg["voice"], workdir))
     sfx = render.make_sfx(workdir)
 
     segments: list[Path] = []

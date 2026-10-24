@@ -112,8 +112,20 @@ def make_sfx(workdir: Path) -> dict[str, Path]:
 def segment(image: Path, duration: float, sounds: list[tuple[Path, float]], video_cfg: dict, out: Path) -> Path:
     """Ein Standbild mit Ton (Liste aus (Datei, Startzeit)) als exakt `duration` Sekunden langes Stück."""
     fps = video_cfg["fps"]
-    cmd = ["ffmpeg", "-y", "-loop", "1", "-framerate", str(fps), "-t", f"{duration:.3f}", "-i", str(image),
-           "-f", "lavfi", "-t", f"{duration:.3f}", "-i", "anullsrc=r=48000:cl=stereo"]
+    return _with_sounds(["-loop", "1", "-framerate", str(fps), "-t", f"{duration:.3f}", "-i", str(image)],
+                        duration, sounds, video_cfg, out,
+                        ["-pix_fmt", "yuv420p", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+                         "-tune", "stillimage", "-r", str(fps)])
+
+
+def add_sounds(video: Path, duration: float, sounds: list[tuple[Path, float]], video_cfg: dict, out: Path) -> Path:
+    """Wie segment(), aber mit einem (stummen) Video statt eines Standbilds."""
+    return _with_sounds(["-i", str(video)], duration, sounds, video_cfg, out, ["-c:v", "copy"])
+
+
+def _with_sounds(video_input: list[str], duration: float, sounds: list[tuple[Path, float]], video_cfg: dict,
+                 out: Path, video_codec: list[str]) -> Path:
+    cmd = ["ffmpeg", "-y", *video_input, "-f", "lavfi", "-t", f"{duration:.3f}", "-i", "anullsrc=r=48000:cl=stereo"]
     chains, labels = [], ["[1:a]"]
     for i, (path, delay) in enumerate(sounds):
         cmd += ["-i", str(path)]
@@ -121,9 +133,8 @@ def segment(image: Path, duration: float, sounds: list[tuple[Path, float]], vide
         chains.append(f"[{i + 2}:a]aresample=48000,aformat=channel_layouts=stereo,adelay={ms}|{ms}[s{i}]")
         labels.append(f"[s{i}]")
     graph = ";".join(chains + [f"{''.join(labels)}amix=inputs={len(labels)}:duration=first:normalize=0[a]"])
-    cmd += ["-filter_complex", graph, "-map", "0:v", "-map", "[a]",
-            "-pix_fmt", "yuv420p", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-tune", "stillimage",
-            "-r", str(fps), "-c:a", "aac", "-b:a", "192k", "-ar", "48000", str(out)]
+    cmd += ["-filter_complex", graph, "-map", "0:v", "-map", "[a]", *video_codec,
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000", str(out)]
     run(cmd)
     return out
 

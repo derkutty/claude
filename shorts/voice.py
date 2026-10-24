@@ -38,11 +38,25 @@ async def _synthesize(text: str, voice: str, rate: str, out: Path) -> list[Word]
     return words
 
 
-def synthesize_scenes(narrations: list[str], voice: str, rate: str, workdir: Path) -> list[SceneAudio]:
+def _speak(text: str, voice_cfg: dict, out: Path) -> list[Word]:
+    voices = [voice_cfg["name"], *([voice_cfg["fallback"]] if voice_cfg.get("fallback") else [])]
+    for i, name in enumerate(voices):
+        try:
+            words = asyncio.run(_synthesize(text, name, voice_cfg["rate"], out))
+            if out.stat().st_size > 0:
+                return words
+        except Exception as e:
+            if i == len(voices) - 1:
+                raise
+            print(f"Warnung: Stimme {name} nicht verfügbar ({e}), nehme {voices[i + 1]}.")
+    raise RuntimeError(f"Keine Sprachausgabe für: {text!r}")
+
+
+def synthesize_scenes(narrations: list[str], voice_cfg: dict, workdir: Path) -> list[SceneAudio]:
     scenes = []
     for i, text in enumerate(narrations):
         out = workdir / f"voice_{i:02d}.mp3"
-        words = asyncio.run(_synthesize(text, voice, rate, out))
+        words = _speak(text, voice_cfg, out)
         # Kleine Pause nach jedem Satz, damit der Schnitt nicht mitten im Ausklingen passiert.
         duration = max(probe_duration(out), words[-1].end if words else 0) + 0.15
         scenes.append(SceneAudio(out, duration, words))

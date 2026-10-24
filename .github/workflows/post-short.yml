@@ -32,9 +32,12 @@ jobs:
           cache: pip
 
       - name: ffmpeg und Schriften installieren
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji libraqm0
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-inter libraqm0
 
       - run: pip install -r requirements.txt
+
+      - name: Chromium für die animierten Formate installieren
+        run: python -m playwright install --with-deps chromium
 
       - name: Short erzeugen und hochladen
         env:

@@ -13,12 +13,18 @@ hashtags = ["#shorts"]
 # Diese Formate werden gegeneinander getestet. Wenn du dich festgelegt hast,
 # trag nur noch eins ein, z. B. formats = ["quiz"].
 # "fakten" braucht zusätzlich einen Pexels-Schlüssel (PEXELS_API_KEY); erst dann hier ergänzen.
-formats = ["quiz", "emoji"]
+formats = ["laender", "quiz", "emoji"]
 # So viele Videos pro Format müssen 3 Tage online sein, bevor ausgewertet wird.
-# Bei 2 Videos am Tag und 2 Formaten dauert die Testphase damit etwa 9 Tage.
+# Bei 2 Videos am Tag und 3 Formaten dauert die Testphase damit etwa 2 Wochen.
 min_videos_per_format = 6
 # Nach der Testphase: Anteil der Uploads, der weiter die anderen Formate testet.
 explore_share = 0.2
+
+[formats.laender]
+themes = "Alltag, Essen und Trinken, Schlaf, Arbeit und Urlaub, Gesundheit, Geld, Sprache, Bräuche und Feste"
+# 4–6 Länder pro Video.
+countries = 5
+hashtags = ["#länder", "#vergleich", "#wusstestdu"]
 
 [formats.quiz]
 themes = "Allgemeinwissen: Tiere, Geografie, menschlicher Körper, Geschichte, Weltraum, Essen, Sprache"
@@ -40,10 +46,13 @@ hashtags = ["#fakten", "#wissen", "#wusstestdu"]
 
 [voice]
 # Kostenlose Microsoft-Edge-Stimmen. Liste: `edge-tts --list-voices`
-# Deutsche Beispiele: de-DE-ConradNeural, de-DE-KatjaNeural, de-DE-FlorianMultilingualNeural
-name = "de-DE-ConradNeural"
-# Etwas schneller als normal wirkt bei Shorts energischer.
-rate = "+12%"
+# Die "Multilingual"-Stimmen klingen deutlich natürlicher als die älteren (z. B. de-DE-ConradNeural).
+# Deutsch: de-DE-FlorianMultilingualNeural (männlich), de-DE-SeraphinaMultilingualNeural (weiblich)
+name = "de-DE-FlorianMultilingualNeural"
+# Falls die Stimme oben einmal nicht erreichbar ist, wird diese genommen.
+fallback = "de-DE-ConradNeural"
+# Etwas schneller als normal wirkt bei Shorts energischer; zu schnell klingt roboterhaft.
+rate = "+6%"
 
 [video]
 width = 1080

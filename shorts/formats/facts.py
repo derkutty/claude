@@ -70,7 +70,7 @@ def create(cfg: dict, history: list[dict], workdir: Path) -> Short:
     if not scenes:
         raise RuntimeError("Claude hat ein Skript ohne Szenen geliefert.")
 
-    audio = voice.synthesize_scenes([s["narration"] for s in scenes], cfg["voice"]["name"], cfg["voice"]["rate"], workdir)
+    audio = voice.synthesize_scenes([s["narration"] for s in scenes], cfg["voice"], workdir)
 
     used_ids: set[int] = set()
     scene_videos = []

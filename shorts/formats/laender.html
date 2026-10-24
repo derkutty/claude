@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --accent: #facc15;
+    --accent2: #38bdf8;
+    --bg1: #0b1020;
+    --bg2: #1b1446;
+    --fg: #ffffff;
+    --muted: rgba(255, 255, 255, 0.72);
+    --card: rgba(255, 255, 255, 0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif, "Noto Color Emoji";
+    color: var(--fg);
+    background: linear-gradient(180deg, var(--bg2), var(--bg1));
+  }
+  /* Weiche Farbflecken als Verlauf statt mit filter: blur – das wäre beim Aufnehmen fünfmal langsamer. */
+  .blob { position: absolute; width: 1300px; height: 1300px; border-radius: 50%; }
+  #b1 { background: radial-gradient(circle, var(--accent2) 0%, transparent 62%); opacity: 0.45; }
+  #b2 { background: radial-gradient(circle, var(--accent) 0%, transparent 62%); opacity: 0.22; }
+  .scene { position: absolute; inset: 0; display: none; }
+  .emoji { font-family: "Noto Color Emoji", sans-serif; line-height: 1; }
+
+  /* Frage oben */
+  #question {
+    position: absolute; top: 150px; left: 70px; right: 70px; text-align: center;
+    font-size: 50px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px;
+    padding: 26px 34px; border-radius: 40px; background: var(--card);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* Intro */
+  #globe { position: absolute; top: 380px; width: 100%; text-align: center; font-size: 260px; }
+  #hook {
+    position: absolute; top: 760px; left: 70px; right: 70px; text-align: center;
+    font-size: 104px; font-weight: 900; line-height: 1.05; letter-spacing: -2px;
+  }
+  #teaser { position: absolute; top: 1240px; width: 100%; text-align: center; font-size: 96px; letter-spacing: 18px; }
+
+  /* Ein Land */
+  #rank {
+    position: absolute; top: 420px; left: 50%; transform: translateX(-50%);
+    font-size: 44px; font-weight: 900; letter-spacing: 4px; color: #0b1020;
+    background: var(--accent); padding: 12px 34px; border-radius: 40px; white-space: nowrap;
+  }
+  #flag { position: absolute; top: 520px; width: 100%; text-align: center; font-size: 250px; }
+  #country {
+    position: absolute; top: 810px; left: 60px; right: 60px; text-align: center;
+    font-size: 96px; font-weight: 900; letter-spacing: -2px; line-height: 1.05;
+  }
+  #value {
+    position: absolute; top: 930px; left: 60px; right: 60px; text-align: center;
+    font-size: 132px; font-weight: 900; color: var(--accent); letter-spacing: -3px; line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+  }
+  #value .unit { display: block; font-size: 44px; font-weight: 700; color: var(--muted); letter-spacing: 0; margin-top: 4px; }
+  #value.headline { font-size: 76px; letter-spacing: -1px; }
+  #bar { position: absolute; top: 1165px; left: 110px; width: 860px; height: 34px; border-radius: 17px; background: var(--card); overflow: hidden; }
+  #barfill { height: 100%; border-radius: 17px; background: linear-gradient(90deg, var(--accent2), var(--accent)); width: 0; }
+  #fact {
+    position: absolute; top: 1225px; left: 90px; right: 90px; text-align: center;
+    font-size: 44px; font-weight: 600; line-height: 1.25; color: var(--muted);
+  }
+  #board { position: absolute; top: 1395px; left: 110px; right: 110px; }
+  .row {
+    display: flex; align-items: center; gap: 22px; height: 64px; padding: 0 26px; margin-bottom: 10px;
+    border-radius: 20px; background: var(--card); font-size: 36px; font-weight: 800;
+  }
+  .row .r { width: 64px; color: var(--accent); }
+  .row .f { font-size: 40px; }
+  .row .n { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .v { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* Outro */
+  #unitlabel {
+    position: absolute; top: 400px; left: 90px; right: 90px; text-align: right;
+    font-size: 34px; font-weight: 700; color: var(--muted);
+  }
+  #final { position: absolute; top: 460px; left: 90px; right: 90px; }
+  #final .row { height: 104px; font-size: 52px; margin-bottom: 18px; border-radius: 28px; }
+  #final .row .f { font-size: 64px; }
+  #final .row.first { background: var(--accent); color: #0b1020; }
+  #final .row.first .r, #final .row.first .v { color: #0b1020; }
+  #outro {
+    position: absolute; top: 1260px; left: 80px; right: 80px; text-align: center;
+    font-size: 64px; font-weight: 900; line-height: 1.1;
+  }
+</style>
+</head>
+<body>
+<div class="blob" id="b1"></div>
+<div class="blob" id="b2"></div>
+
+<div class="scene" id="s-intro">
+  <div id="globe" class="emoji">🌍</div>
+  <div id="hook"></div>
+  <div id="teaser" class="emoji"></div>
+</div>
+
+<div class="scene" id="s-item">
+  <div id="rank"></div>
+  <div id="flag" class="emoji"></div>
+  <div id="country"></div>
+  <div id="value"></div>
+  <div id="bar"><div id="barfill"></div></div>
+  <div id="fact"></div>
+  <div id="board"></div>
+</div>
+
+<div class="scene" id="s-outro">
+  <div id="unitlabel"></div>
+  <div id="final"></div>
+  <div id="outro"></div>
+</div>
+
+<div id="question"></div>
+
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const easeBack = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const fmt = new Intl.NumberFormat(DATA.locale, { minimumFractionDigits: DATA.decimals, maximumFractionDigits: DATA.decimals });
+const ranking = DATA.mode === "ranking";
+const max = Math.max(...DATA.items.map((i) => Math.abs(i.value)), 1e-9);
+
+document.documentElement.style.setProperty("--accent", DATA.palette.accent);
+document.documentElement.style.setProperty("--accent2", DATA.palette.accent2);
+document.documentElement.style.setProperty("--bg1", DATA.palette.bg1);
+document.documentElement.style.setProperty("--bg2", DATA.palette.bg2);
+$("question").textContent = DATA.question;
+$("hook").textContent = DATA.hook;
+$("outro").textContent = DATA.outro;
+$("unitlabel").textContent = ranking ? DATA.unit : "";
+$("teaser").textContent = [...DATA.items].sort((a, b) => a.country.localeCompare(b.country)).map((i) => i.flag).join("");
+
+function row(item, cls = "") {
+  const r = document.createElement("div");
+  r.className = "row " + cls;
+  r.innerHTML = '<span class="r"></span><span class="f emoji"></span><span class="n"></span><span class="v"></span>';
+  r.querySelector(".r").textContent = ranking ? `#${item.rank}` : `${item.index + 1}.`;
+  r.querySelector(".f").textContent = item.flag;
+  r.querySelector(".n").textContent = item.country;
+  // In den Tabellen nur die Zahl; die Einheit steht einmal darüber bzw. beim aktuellen Land.
+  r.querySelector(".v").textContent = ranking ? fmt.format(item.value) : "";
+  return r;
+}
+
+const finalRows = (ranking ? [...DATA.items].sort((a, b) => a.rank - b.rank) : DATA.items).map((it, k) => {
+  const r = row(it, ranking && it.rank === 1 ? "first" : "");
+  $("final").appendChild(r);
+  return r;
+});
+
+function background(T) {
+  $("b1").style.transform = `translate(${-450 + Math.sin(T * 0.35) * 160}px, ${-400 + Math.cos(T * 0.27) * 140}px)`;
+  $("b2").style.transform = `translate(${220 + Math.cos(T * 0.31) * 170}px, ${950 + Math.sin(T * 0.22) * 160}px)`;
+}
+
+function pop(el, t, delay = 0, dur = 0.45, dy = 40) {
+  const p = clamp((t - delay) / dur);
+  el.style.opacity = easeOut(p);
+  el.style.transform = `translateY(${(1 - easeOut(p)) * dy}px)`;
+}
+
+window.show = function (state, t, T) {
+  background(T);
+  for (const s of ["intro", "item", "outro"]) $("s-" + s).style.display = s === state.scene ? "block" : "none";
+  const q = $("question");
+  q.style.display = state.scene === "intro" ? "none" : "block";
+
+  if (state.scene === "intro") {
+    const g = $("globe");
+    g.style.transform = `scale(${easeBack(t / 0.55)}) translateY(${Math.sin(T * 2.2) * 14}px) rotate(${Math.sin(T * 1.3) * 6}deg)`;
+    pop($("hook"), t, 0.15, 0.5, 60);
+    pop($("teaser"), t, 0.6, 0.6, 40);
+    return;
+  }
+
+  if (state.scene === "item") {
+    const item = DATA.items[state.index];
+    pop(q, t + 1, 0);
+    $("rank").textContent = ranking ? `${DATA.place_word} ${item.rank}` : `${state.index + 1} / ${DATA.items.length}`;
+    $("rank").style.transform = `translateX(-50%) scale(${easeBack(t / 0.4)})`;
+    $("flag").textContent = item.flag;
+    $("flag").style.transform = `scale(${easeBack((t - 0.08) / 0.55)}) translateY(${Math.sin(T * 2) * 8}px)`;
+    $("country").textContent = item.country;
+    pop($("country"), t, 0.18, 0.4, 50);
+
+    const v = $("value");
+    const grow = easeOut((t - 0.35) / 0.9);
+    if (ranking) {
+      v.className = "";
+      v.innerHTML = '<span class="num"></span><span class="unit"></span>';
+      v.querySelector(".num").textContent = fmt.format(item.value * grow);
+      v.querySelector(".unit").textContent = DATA.unit;
+      $("bar").style.display = "block";
+      $("barfill").style.width = `${(Math.abs(item.value) / max) * grow * 100}%`;
+    } else {
+      v.className = "headline";
+      v.textContent = item.headline;
+      $("bar").style.display = "none";
+    }
+    pop(v, t, 0.3, 0.4, 40);
+    pop($("fact"), t, 1.15, 0.5, 30);
+    $("fact").textContent = item.fact;
+
+    const board = $("board");
+    board.innerHTML = "";
+    if (ranking) {
+      for (const prev of DATA.items.slice(Math.max(0, state.index - 3), state.index)) board.appendChild(row(prev));
+    }
+    return;
+  }
+
+  if (state.scene === "outro") {
+    pop(q, t + 1, 0);
+    pop($("unitlabel"), t, 0.05, 0.4, 20);
+    finalRows.forEach((r, k) => pop(r, t, 0.1 + k * 0.12, 0.45, 60));
+    pop($("outro"), t, 0.25 + finalRows.length * 0.12, 0.5, 40);
+  }
+};
+</script>
+</body>
+</html>
