@@ -69,7 +69,12 @@ words_per_caption = 2
 music_volume = 0.10
 
 [upload]
-# "public", "unlisted" oder "private".
+# "manual": Das Programm lädt nicht selbst hoch, sondern legt jedes Video als GitHub-Release
+#           (github.com/derkutty/claude/releases) bereit, und du lädst es mit der YouTube-App hoch.
+# "api":    Das Programm lädt selbst hoch. Erst einstellen, wenn Google das YouTube-API-Audit
+#           bestätigt hat – vorher sperrt YouTube alle so hochgeladenen Videos dauerhaft als privat.
+mode = "manual"
+# Nur für mode = "api": "public", "unlisted" oder "private".
 privacy = "public"
 # YouTube-Kategorie: 27 = Bildung, 24 = Unterhaltung, 28 = Wissenschaft & Technik
 category_id = "27"

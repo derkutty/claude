@@ -48,13 +48,21 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python -m shorts.main ${{ inputs.no_upload && '--no-upload' || '' }}
 
+      - name: Video zum Hochladen bereitlegen (GitHub-Release)
+        if: hashFiles('build/release/tag.txt') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$(cat build/release/tag.txt)" build/release/short.mp4 \
+            --title "$(cat build/release/title.txt)" --notes-file build/release/notes.md
+
       - name: Video als Artefakt speichern
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: short
           path: |
-            build/*/short.mp4
+            build/2*/short.mp4
           retention-days: 7
           if-no-files-found: ignore
 

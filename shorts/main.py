@@ -1,11 +1,15 @@
 """Ein komplettes Short erzeugen und hochladen.
 
-    python -m shorts.main                  # Format automatisch wählen, erzeugen, hochladen
+    python -m shorts.main                  # Format automatisch wählen, erzeugen, veröffentlichen
     python -m shorts.main --no-upload      # nur erzeugen (Video liegt danach in build/)
     python -m shorts.main --format quiz    # ein bestimmtes Format erzwingen
+
+Mit [upload] mode = "manual" lädt das Programm nicht selbst hoch, sondern legt Video, Titel und
+Beschreibung in build/release/ ab; der Workflow macht daraus eine GitHub-Release zum Herunterladen.
 """
 
 import argparse
+import shutil
 from datetime import datetime, timezone
 
 from . import experiment, state, youtube
@@ -29,6 +33,7 @@ def main() -> None:
     if not args.no_upload:
         yt = youtube.client()
         try:
+            youtube.link_manual_uploads(yt, history)
             youtube.refresh_stats(yt, history)
         except Exception as e:  # Statistiken sind nur Feedback – kein Grund, den Lauf abzubrechen.
             print(f"Warnung: Statistiken konnten nicht geladen werden: {e}")
@@ -48,8 +53,14 @@ def main() -> None:
         return
 
     hashtags = " ".join([*cfg["channel"]["hashtags"], *short.hashtags])
-    video_id = youtube.upload(yt, short.video, short.title, f"{short.description}\n\n{hashtags}", short.tags, cfg["upload"])
-    print(f"Hochgeladen: https://youtube.com/shorts/{video_id}")
+    description = f"{short.description}\n\n{hashtags}"
+    if cfg["upload"]["mode"] == "manual":
+        video_id = None
+        write_release(short, description, now)
+        print("Zum Hochladen bereitgelegt (GitHub-Release).")
+    else:
+        video_id = youtube.upload(yt, short.video, short.title, description, short.tags, cfg["upload"])
+        print(f"Hochgeladen: https://youtube.com/shorts/{video_id}")
     history.append({
         "date": now.isoformat(timespec="seconds"),
         "format": name,
@@ -60,6 +71,28 @@ def main() -> None:
     })
     state.save_history(history)
     experiment.write_report(cfg, history, {k: m.LABEL for k, m in formats.items()})
+
+
+def write_release(short, description: str, now: datetime) -> None:
+    """Video plus Texte zum Kopieren ablegen; der Workflow erstellt daraus eine GitHub-Release."""
+    out = BUILD_DIR / "release"
+    out.mkdir(parents=True, exist_ok=True)
+    shutil.copy(short.video, out / "short.mp4")
+    (out / "tag.txt").write_text(f"short-{now:%Y%m%d-%H%M}", encoding="utf-8")
+    (out / "title.txt").write_text(short.title, encoding="utf-8")
+    fence = "```"
+    (out / "notes.md").write_text(
+        "So lädst du dieses Short hoch:\n\n"
+        "1. Unten bei **Assets** auf **short.mp4** tippen und speichern.\n"
+        "2. In der YouTube-App auf **+** → **Short** → **Hochladen** und das Video auswählen.\n"
+        "3. Titel und Beschreibung unten kopieren und einfügen. **Den Titel bitte genau so lassen**, "
+        "sonst findet der Bot das Video nicht und kann nicht daraus lernen.\n"
+        "4. Zielgruppe: **Nein, nicht speziell für Kinder**. Dann **Hochladen**.\n\n"
+        f"**Titel**\n{fence}\n{short.title}\n{fence}\n\n"
+        f"**Beschreibung**\n{fence}\n{description}\n{fence}\n\n"
+        f"**Tags** (optional, in YouTube Studio unter „Mehr Optionen“)\n{fence}\n{', '.join(short.tags)}\n{fence}\n",
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":

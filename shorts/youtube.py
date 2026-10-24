@@ -48,6 +48,43 @@ def upload(yt, path, title: str, description: str, tags: list[str], upload_cfg: 
     return response["id"]
 
 
+def _normalize(title: str) -> str:
+    return " ".join(title.lower().split())
+
+
+def link_manual_uploads(yt, history: list[dict]) -> None:
+    """Selbst hochgeladene Videos über den Titel den Einträgen im Verlauf zuordnen.
+
+    Liest die letzten 100 Uploads des eigenen Kanals (je 1 Quota-Einheit pro 50)."""
+    open_entries = [h for h in history if not h.get("video_id")]
+    if not open_entries:
+        return
+    channels = yt.channels().list(part="contentDetails", mine=True).execute().get("items", [])
+    if not channels:
+        return
+    playlist = channels[0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    uploads, token = [], None
+    for _ in range(2):
+        resp = yt.playlistItems().list(part="snippet,contentDetails", playlistId=playlist, maxResults=50,
+                                       pageToken=token).execute()
+        uploads += resp.get("items", [])
+        token = resp.get("nextPageToken")
+        if not token:
+            break
+    known = {h["video_id"] for h in history if h.get("video_id")}
+    for h in open_entries:
+        wanted = _normalize(h["title"])
+        for item in uploads:
+            video_id = item["contentDetails"]["videoId"]
+            # "enthält" statt "gleich", falls beim Hochladen z. B. noch ein Hashtag angehängt wurde.
+            if video_id not in known and wanted in _normalize(item["snippet"]["title"]):
+                h["video_id"] = video_id
+                h["published"] = item["contentDetails"].get("videoPublishedAt") or item["snippet"]["publishedAt"]
+                known.add(video_id)
+                print(f"Selbst hochgeladenes Video gefunden: {h['title']}")
+                break
+
+
 def refresh_stats(yt, history: list[dict]) -> None:
     """Aufrufe/Likes der bisherigen Videos aktualisieren (kostet 1 Quota-Einheit pro 50 Videos)."""
     ids = [h["video_id"] for h in history if h.get("video_id")]

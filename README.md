@@ -98,18 +98,26 @@ Das ist der längste Schritt. Google will wissen, welches Programm in deinem Nam
 ### Schritt 6: Probelauf
 1. Im Repository oben auf **Actions** → links **Short posten** → rechts **Run workflow**.
 2. Haken bei **Nur erzeugen, nicht hochladen** → grüner Button **Run workflow**.
-3. Nach 2–5 Minuten ist der Lauf grün. Draufklicken → unten bei **Artifacts** liegt **short** zum Herunterladen.
+3. Nach 4–8 Minuten ist der Lauf grün. Draufklicken → unten bei **Artifacts** liegt **short** zum Herunterladen.
    Das ist dein erstes Video.
-4. Wenn es dir gefällt, denselben Lauf **ohne** Haken starten. Dann wird wirklich hochgeladen.
 
-Ab jetzt läuft der Kanal von selbst, jeden Tag um 12:17 und 19:47 Uhr.
+Ab jetzt erstellt der Kanal jeden Tag um 11:17 und 18:47 Uhr (Winterzeit) von selbst ein Video.
 
-### Schritt 7: Freischaltung für öffentliche Videos
-Google stellt Videos von neuen, ungeprüften API-Projekten **automatisch auf „privat“**. Damit sie von selbst
-öffentlich erscheinen, beantragst du einmalig das kostenlose
-[YouTube-API-Audit](https://support.google.com/youtube/contact/yt_api_form). Das dauert meist einige Tage bis wenige Wochen.
-Bis dahin stellst du die Videos im [YouTube Studio](https://studio.youtube.com) unter **Inhalte** von Hand auf
-**Öffentlich**. Das sind zwei Klicks pro Video.
+### Schritt 7: Videos veröffentlichen
+
+**Bis zum Audit: selbst hochladen (ca. 1 Minute pro Video).**
+Videos, die eine ungeprüfte App über die YouTube-API hochlädt, sperrt YouTube **dauerhaft** als privat. Auch von Hand
+lassen sie sich nicht mehr freischalten ([YouTube-Hilfe](https://support.google.com/youtube/answer/7300965)).
+Deshalb steht in `config.toml` vorerst `mode = "manual"`: Der Bot lädt nicht selbst hoch, sondern legt jedes fertige
+Video unter **[Releases](https://github.com/derkutty/claude/releases)** ab, mit Titel und Beschreibung zum Kopieren.
+1. Release öffnen → bei **Assets** auf **short.mp4** tippen und speichern.
+2. YouTube-App → **+** → **Short** → Video auswählen.
+3. Titel und Beschreibung aus der Release einfügen. **Den Titel genau so lassen**, denn daran erkennt der Bot das
+   Video wieder und liest die Aufrufe für den Format-Test aus.
+
+**Danach: automatisch.** Einmalig das kostenlose
+[YouTube-API-Audit](https://support.google.com/youtube/contact/yt_api_form) beantragen. Sobald Google es bestätigt,
+in `config.toml` `mode = "api"` setzen. Ab dann lädt der Bot direkt öffentlich hoch.
 
 ---
 

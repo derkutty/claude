@@ -17,10 +17,13 @@ REPORT_PATH = ROOT / "data" / "report.md"
 
 
 def snapshot_ratings(history: list[dict], now: datetime) -> None:
-    """Aufrufzahl festhalten, sobald ein Video 3 Tage alt ist (einmalig pro Video)."""
+    """Aufrufzahl festhalten, sobald ein Video 3 Tage online ist (einmalig pro Video).
+
+    Bei selbst hochgeladenen Videos zählt der Zeitpunkt der Veröffentlichung, nicht der Erstellung."""
     for h in history:
         if "views_3d" not in h and isinstance(h.get("views"), int):
-            if now - datetime.fromisoformat(h["date"]) >= RATING_AGE:
+            online_since = datetime.fromisoformat(h.get("published", h["date"]).replace("Z", "+00:00"))
+            if now - online_since >= RATING_AGE:
                 h["views_3d"] = h["views"]
 
 
