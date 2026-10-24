@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenschutzerklärung</title>
+<style>
+  :root { --bg: #1e1b4b; --fg: #f5f5f7; --muted: #c7c7d1; --accent: #facc15; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 system-ui, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 16px; }
+  h1 { font-size: 2rem; margin: 0 0 16px; }
+  h2 { font-size: 1.15rem; margin: 32px 0 4px; color: var(--accent); }
+  p, li { color: var(--muted); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Datenschutzerklärung für shorts-bot</h1>
+
+  <h2>Wer die Anwendung nutzt</h2>
+  <p>shorts-bot ist ein privates Werkzeug des Betreibers eines einzelnen YouTube-Kanals. Es wird
+  ausschließlich vom Betreiber selbst für den eigenen Kanal genutzt. Andere Personen melden sich nicht an.</p>
+
+  <h2>Welche Google- und YouTube-Daten verwendet werden</h2>
+  <ul>
+    <li><strong>Videos hochladen</strong> (Berechtigung <code>youtube.upload</code>): um selbst erstellte Shorts
+      auf den eigenen Kanal hochzuladen.</li>
+    <li><strong>Eigene Videos lesen</strong> (Berechtigung <code>youtube.readonly</code>): um Aufruf- und
+      Like-Zahlen der eigenen hochgeladenen Videos abzurufen.</li>
+  </ul>
+  <p>Es werden keine Daten anderer Nutzer, keine Kommentare, keine Kontakte und keine sonstigen
+  personenbezogenen Daten abgerufen.</p>
+
+  <h2>Speicherung</h2>
+  <p>Gespeichert werden nur die IDs, Titel und Aufrufzahlen der eigenen Videos, in einem privaten Speicher
+  des Betreibers. Die Zugangsdaten zu Google werden verschlüsselt als geschützte Geheimnisse beim
+  Ausführungsdienst (GitHub Actions) abgelegt.</p>
+
+  <h2>Weitergabe</h2>
+  <p>Daten aus Google- oder YouTube-Konten werden nicht verkauft und nicht an Dritte weitergegeben. Die
+  Texte der Videos werden mit Hilfe der Claude-API von Anthropic erstellt. Dabei werden keine Daten aus
+  Google- oder YouTube-Konten übermittelt.</p>
+
+  <h2>YouTube und Google</h2>
+  <p>shorts-bot nutzt die YouTube API Services. Es gelten die
+  <a href="https://www.youtube.com/t/terms">Nutzungsbedingungen von YouTube</a> und die
+  <a href="https://policies.google.com/privacy">Datenschutzerklärung von Google</a>. Der Zugriff lässt sich
+  jederzeit unter <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>
+  widerrufen.</p>
+
+  <h2>Kontakt</h2>
+  <p>Bei Fragen erreichst du den Betreiber über die Support-E-Mail-Adresse, die auf dem Google-Anmeldebildschirm
+  dieser Anwendung angezeigt wird.</p>
+
+  <p><a href="index.html">Zur Startseite</a></p>
+</main>
+</body>
+</html>
