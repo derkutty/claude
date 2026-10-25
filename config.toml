@@ -13,7 +13,7 @@ hashtags = ["#shorts"]
 # Diese Formate werden gegeneinander getestet. Wenn du dich festgelegt hast,
 # trag nur noch eins ein, z. B. formats = ["quiz"].
 # "fakten" braucht zusätzlich einen Pexels-Schlüssel (PEXELS_API_KEY); erst dann hier ergänzen.
-formats = ["laender", "quiz", "emoji"]
+formats = ["erklaert", "laender", "quiz"]
 # So viele Videos pro Format müssen 3 Tage online sein, bevor ausgewertet wird.
 # Bei 2 Videos am Tag und 3 Formaten dauert die Testphase damit etwa 2 Wochen.
 min_videos_per_format = 6
