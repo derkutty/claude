@@ -9,8 +9,9 @@ Beschreibung in build/release/ ab; der Workflow macht daraus eine GitHub-Release
 """
 
 import argparse
+import os
 import shutil
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from . import experiment, state, youtube
 from .config import BUILD_DIR, load_config, require_env
@@ -28,6 +29,14 @@ def main() -> None:
     history = state.load_history()
     require_env("ANTHROPIC_API_KEY")
     now = datetime.now(timezone.utc)
+
+    # GitHub startet geplante Läufe manchmal Stunden zu spät. Ist inzwischen schon ein Video
+    # entstanden (z. B. weil der Lauf von Hand nachgeholt wurde), nicht noch eins erzeugen.
+    if os.environ.get("GITHUB_EVENT_NAME") == "schedule" and history:
+        last = datetime.fromisoformat(history[-1]["date"])
+        if now - last < timedelta(hours=4):
+            print(f"Übersprungen: Letztes Video ist erst {now - last} alt (verspäteter geplanter Lauf).")
+            return
 
     yt = None
     if not args.no_upload:
