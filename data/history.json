@@ -7,7 +7,7 @@
     "hook": "Wo wird am meisten gearbeitet? Deutschland überrascht!",
     "video_id": "mmgYdZbK5YM",
     "published": "2026-10-24T19:53:04Z",
-    "views": 1114,
+    "views": 1182,
     "likes": 1
   },
   {
@@ -16,6 +16,17 @@
     "topic": "Der menschliche Körper",
     "title": "Körper-Quiz: Wie gut kennst du deinen eigenen Körper?",
     "hook": "Nur wenige kennen ihren Körper wirklich!",
+    "video_id": "1rojHclVNQU",
+    "published": "2026-10-25T12:42:06Z",
+    "views": 0,
+    "likes": 0
+  },
+  {
+    "date": "2026-10-25T14:27:20+00:00",
+    "format": "emoji",
+    "topic": "Märchen der Brüder Grimm",
+    "title": "Emoji-Rätsel: Erkennst du diese 4 Märchen? 🧚",
+    "hook": "Errätst du alle vier Märchen?",
     "video_id": null
   }
 ]
