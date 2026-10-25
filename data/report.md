@@ -5,7 +5,7 @@
 | Format | Videos | davon bewertet | Aufrufe nach 3 Tagen (Median) | Bestes Video |
 |---|---|---|---|---|
 | Länder-Check | 1 | 0 | – | – |
-| Quiz-Rätsel | 0 | 0 | – | – |
+| Quiz-Rätsel | 1 | 0 | – | – |
 | Emoji-Rätsel | 0 | 0 | – | – |
 
-Zuletzt aktualisiert: 24.10.2026 19:45 UTC
+Zuletzt aktualisiert: 25.10.2026 11:25 UTC
