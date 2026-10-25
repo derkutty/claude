@@ -20,6 +20,12 @@ min_videos_per_format = 6
 # Nach der Testphase: Anteil der Uploads, der weiter die anderen Formate testet.
 explore_share = 0.2
 
+[formats.erklaert]
+themes = "Peinliche und überraschende Fragen über den Körper, Psychologie, Beziehungen und Dating (mit Studien), Alltagsphänomene, Länder und Kulturen (mit belegten Hintergründen, ohne Klischees)"
+# Steht oben in jedem Video, daneben die fortlaufende Nummer (#1, #2, …).
+series_label = "SO FUNKTIONIERT'S"
+hashtags = ["#erklärt", "#wusstestdu", "#psychologie"]
+
 [formats.laender]
 themes = "Alltag, Essen und Trinken, Schlaf, Arbeit und Urlaub, Gesundheit, Geld, Sprache, Bräuche und Feste"
 # 4–6 Länder pro Video.

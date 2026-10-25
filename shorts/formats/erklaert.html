@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --accent: #e3ff3b;
+    --people: #7dd3fc;
+    --bg: #0d1b2e;
+    --grid: rgba(125, 211, 252, 0.07);
+    --fg: #ffffff;
+    --dim: rgba(255, 255, 255, 0.32);
+    --card: rgba(255, 255, 255, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    font-family: "Inter Display", "Inter", "DejaVu Sans", sans-serif, "Noto Color Emoji";
+    color: var(--fg);
+    background-color: var(--bg);
+    /* Millimeterpapier-Raster wie auf einem Bauplan */
+    background-image:
+      linear-gradient(var(--grid) 2px, transparent 2px),
+      linear-gradient(90deg, var(--grid) 2px, transparent 2px),
+      radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.16), transparent 60%);
+    background-size: 60px 60px, 60px 60px, 100% 100%;
+  }
+  .emoji { font-family: "Noto Color Emoji", sans-serif; line-height: 1; }
+  .accent { color: var(--accent); }
+
+  #series {
+    position: absolute; top: 140px; width: 100%; text-align: center;
+    font-size: 36px; font-weight: 800; letter-spacing: 6px; color: rgba(255, 255, 255, 0.75);
+  }
+  #badge {
+    position: absolute; top: 190px; left: 50%; transform: translateX(-50%);
+    font-size: 28px; font-weight: 800; padding: 4px 18px; border: 3px solid rgba(255, 255, 255, 0.6);
+    border-radius: 30px; color: rgba(255, 255, 255, 0.85);
+  }
+  #headline {
+    position: absolute; top: 270px; left: 60px; right: 60px; height: 330px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-size: 104px; font-weight: 900; line-height: 1.0; letter-spacing: -2px; text-transform: uppercase;
+  }
+  #stage { position: absolute; top: 640px; left: 0; right: 0; height: 560px; }
+  #caption {
+    position: absolute; top: 1240px; left: 70px; right: 70px; min-height: 120px;
+    padding: 26px 34px; border-radius: 28px; background: rgba(0, 0, 0, 0.35);
+    font-size: 54px; font-weight: 800; line-height: 1.22; text-align: center;
+  }
+  #caption span { transition: none; }
+
+  /* Szenen-Bausteine */
+  .big-emoji { position: absolute; top: 40px; width: 100%; text-align: center; font-size: 360px; }
+  .people { position: absolute; top: 30px; left: 70px; right: 70px; display: grid; grid-template-columns: repeat(10, 1fr); row-gap: 40px; }
+  .person { width: 74px; height: 170px; margin: 0 auto; }
+  .person svg { width: 100%; height: 100%; }
+  .stat-label {
+    position: absolute; top: 470px; width: 100%; text-align: center; font-size: 52px; font-weight: 900;
+  }
+  .number { position: absolute; top: 60px; width: 100%; text-align: center; font-size: 250px; font-weight: 900;
+            color: var(--accent); letter-spacing: -8px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .unit { position: absolute; top: 330px; width: 100%; text-align: center; font-size: 62px; font-weight: 800; }
+  .number-label { position: absolute; top: 420px; left: 80px; right: 80px; text-align: center; font-size: 44px;
+                  font-weight: 700; color: rgba(255, 255, 255, 0.75); }
+  .bars { position: absolute; top: 20px; left: 110px; right: 110px; }
+  .bar-row { margin-bottom: 48px; }
+  .bar-head { display: flex; justify-content: space-between; font-size: 56px; font-weight: 900; margin-bottom: 14px; }
+  .bar-head .v { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .bar-track { height: 60px; border-radius: 30px; background: var(--card); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 30px; background: var(--people); width: 0; }
+  .bar-row.top .bar-fill { background: var(--accent); }
+  .versus { position: absolute; top: 30px; left: 60px; right: 60px; display: flex; gap: 30px; align-items: stretch; }
+  .side { flex: 1; text-align: center; background: var(--card); border: 3px solid rgba(255, 255, 255, 0.1);
+          border-radius: 36px; padding: 40px 20px; }
+  .side .emoji { font-size: 200px; }
+  .side .l { margin-top: 26px; font-size: 48px; font-weight: 900; }
+  .side .s { margin-top: 10px; font-size: 36px; font-weight: 700; color: rgba(255, 255, 255, 0.7); }
+  .vs { position: absolute; top: 200px; left: 50%; transform: translateX(-50%); font-size: 56px; font-weight: 900;
+        background: var(--accent); color: var(--bg); width: 110px; height: 110px; border-radius: 55px;
+        display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="person" viewBox="0 0 74 170">
+    <circle cx="37" cy="22" r="20"/>
+    <rect x="12" y="48" width="50" height="66" rx="18"/>
+    <rect x="16" y="104" width="17" height="64" rx="7"/>
+    <rect x="41" y="104" width="17" height="64" rx="7"/>
+  </symbol>
+</svg>
+
+<div id="series"></div>
+<div id="badge"></div>
+<div id="headline"><div id="htext"></div></div>
+<div id="stage"></div>
+<div id="caption"></div>
+
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const easeBack = (x) => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const fmt = (v, d) => new Intl.NumberFormat(DATA.locale, { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+
+document.documentElement.style.setProperty("--accent", DATA.palette.accent);
+document.documentElement.style.setProperty("--people", DATA.palette.people);
+$("series").textContent = DATA.series;
+$("badge").textContent = `#${DATA.number}`;
+
+function accentText(el, text) {
+  // *Wort* wird in der Akzentfarbe gesetzt.
+  el.innerHTML = "";
+  text.split("*").forEach((part, i) => {
+    const span = document.createElement("span");
+    span.textContent = part;
+    if (i % 2 === 1) span.className = "accent";
+    el.appendChild(span);
+  });
+}
+
+function fitHeadline(box, text) {
+  // Text in einem eigenen Block, damit die Wörter normal umbrechen (Flexbox würde jedes Wort einzeln setzen).
+  let size = 104;
+  text.style.fontSize = size + "px";
+  while ((text.offsetHeight > box.clientHeight || text.scrollWidth > box.clientWidth) && size > 56) {
+    size -= 4;
+    text.style.fontSize = size + "px";
+  }
+}
+
+// Jede Szene wird einmal aufgebaut und dann pro Bild nur noch animiert.
+const built = DATA.scenes.map((scene) => {
+  const root = document.createElement("div");
+  const parts = {};
+  if (scene.type === "titel" || scene.type === "symbol") {
+    root.innerHTML = '<div class="big-emoji emoji"></div>';
+    parts.emoji = root.querySelector(".big-emoji");
+    parts.emoji.textContent = scene.emoji;
+  } else if (scene.type === "menschen") {
+    root.innerHTML = '<div class="people"></div><div class="stat-label"></div>';
+    const grid = root.querySelector(".people");
+    const total = scene.total, k = Math.max(0, Math.min(scene.highlight, total));
+    // Hervorgehobene Figuren gleichmäßig verteilen statt alle am Anfang.
+    const marked = new Set(Array.from({ length: k }, (_, i) => Math.floor((i + 0.5) * total / k)));
+    parts.people = Array.from({ length: total }, (_, i) => {
+      const p = document.createElement("div");
+      p.className = "person";
+      p.innerHTML = '<svg><use href="#person"/></svg>';
+      grid.appendChild(p);
+      return { el: p, marked: marked.has(i) };
+    });
+    parts.label = root.querySelector(".stat-label");
+    accentText(parts.label, scene.label);
+  } else if (scene.type === "zahl") {
+    root.innerHTML = '<div class="number"></div><div class="unit"></div><div class="number-label"></div>';
+    parts.number = root.querySelector(".number");
+    root.querySelector(".unit").textContent = scene.unit;
+    parts.unit = root.querySelector(".unit");
+    parts.label = root.querySelector(".number-label");
+    parts.label.textContent = scene.label;
+  } else if (scene.type === "balken") {
+    root.innerHTML = '<div class="bars"></div>';
+    const max = Math.max(...scene.items.map((b) => Math.abs(b.value)), 1e-9);
+    const top = Math.max(...scene.items.map((b) => b.value));
+    parts.bars = scene.items.map((b) => {
+      const row = document.createElement("div");
+      row.className = "bar-row" + (b.value === top ? " top" : "");
+      row.innerHTML = '<div class="bar-head"><span class="l"></span><span class="v"></span></div><div class="bar-track"><div class="bar-fill"></div></div>';
+      row.querySelector(".l").textContent = `${b.emoji ? b.emoji + " " : ""}${b.label}`;
+      root.querySelector(".bars").appendChild(row);
+      return { row, b, max, v: row.querySelector(".v"), fill: row.querySelector(".bar-fill") };
+    });
+  } else if (scene.type === "vergleich") {
+    root.innerHTML = '<div class="versus"></div><div class="vs">VS</div>';
+    parts.sides = scene.items.slice(0, 2).map((it) => {
+      const s = document.createElement("div");
+      s.className = "side";
+      s.innerHTML = '<div class="emoji"></div><div class="l"></div><div class="s"></div>';
+      s.querySelector(".emoji").textContent = it.emoji;
+      s.querySelector(".l").textContent = it.label;
+      s.querySelector(".s").textContent = it.sub || "";
+      root.querySelector(".versus").appendChild(s);
+      return s;
+    });
+    parts.vs = root.querySelector(".vs");
+  }
+  root.style.display = "none";
+  $("stage").appendChild(root);
+  return { scene, root, parts };
+});
+
+let current = -1;
+
+window.show = function (state, t, T) {
+  const { scene, root, parts } = built[state.index];
+  if (current !== state.index) {
+    built.forEach((b) => (b.root.style.display = "none"));
+    root.style.display = "block";
+    accentText($("htext"), scene.headline);
+    fitHeadline($("headline"), $("htext"));
+    const cap = $("caption");
+    cap.innerHTML = "";
+    state.words.forEach((w) => {
+      const span = document.createElement("span");
+      span.textContent = w.text + " ";
+      cap.appendChild(span);
+    });
+    current = state.index;
+  }
+
+  // Überschrift springt rein, das Raster driftet langsam.
+  const h = $("headline");
+  h.style.transform = `scale(${0.85 + 0.15 * easeBack(t / 0.45)})`;
+  h.style.opacity = easeOut(t / 0.25);
+  document.body.style.backgroundPosition = `0 ${(T * 12) % 60}px, ${(T * 12) % 60}px 0, 0 0`;
+
+  // Karaoke-Untertitel: gesprochene Wörter weiß, kommende gedimmt, Zahlen in Akzentfarbe.
+  [...$("caption").children].forEach((span, i) => {
+    const w = state.words[i];
+    const spoken = t >= w.start;
+    const isNum = /\d/.test(w.text);
+    span.style.color = spoken ? (isNum ? DATA.palette.accent : "#ffffff") : "rgba(255,255,255,0.32)";
+  });
+
+  if (parts.emoji) {
+    parts.emoji.style.transform = `scale(${easeBack((t - 0.1) / 0.55)}) translateY(${Math.sin(T * 2.2) * 12}px) rotate(${Math.sin(T * 1.4) * 5}deg)`;
+  }
+  if (parts.people) {
+    parts.people.forEach((p, i) => {
+      const appear = easeBack((t - 0.1 - i * 0.025) / 0.35);
+      const lit = p.marked ? easeOut((t - 1.0 - i * 0.02) / 0.3) : 0;
+      p.el.style.transform = `scale(${appear * (1 + 0.12 * lit)})`;
+      p.el.style.fill = lit > 0.5 ? DATA.palette.accent : DATA.palette.people;
+      p.el.style.opacity = p.marked || t < 1.0 ? 1 : 1 - 0.55 * easeOut((t - 1.0) / 0.3);
+    });
+    parts.label.style.opacity = easeOut((t - 1.2) / 0.35);
+  }
+  if (parts.number) {
+    parts.number.textContent = fmt(scene.number * easeOut((t - 0.2) / 1.0), scene.decimals);
+    parts.number.style.transform = `scale(${0.8 + 0.2 * easeBack((t - 0.1) / 0.4)})`;
+    parts.unit.style.opacity = easeOut((t - 0.5) / 0.3);
+    parts.label.style.opacity = easeOut((t - 0.8) / 0.4);
+  }
+  if (parts.bars) {
+    parts.bars.forEach(({ row, b, max, v, fill }, i) => {
+      const g = easeOut((t - 0.25 - i * 0.18) / 0.8);
+      row.style.opacity = easeOut((t - 0.1 - i * 0.18) / 0.3);
+      fill.style.width = `${(Math.abs(b.value) / max) * g * 100}%`;
+      v.textContent = `${fmt(b.value * g, scene.decimals)}${scene.unit ? " " + scene.unit : ""}`;
+    });
+  }
+  if (parts.sides) {
+    parts.sides.forEach((s, i) => {
+      const p = easeBack((t - 0.1 - i * 0.25) / 0.45);
+      s.style.transform = `translateY(${(1 - clamp(p)) * 80}px) scale(${0.9 + 0.1 * p})`;
+      s.style.opacity = clamp(p * 1.5);
+    });
+    parts.vs.style.transform = `translateX(-50%) scale(${easeBack((t - 0.55) / 0.4)})`;
+  }
+};
+</script>
+</body>
+</html>

@@ -11,6 +11,11 @@ on:
         description: "Nur erzeugen, nicht hochladen (zum Testen)"
         type: boolean
         default: false
+      format:
+        description: "Format (automatisch = Format-Test entscheidet)"
+        type: choice
+        default: automatisch
+        options: [automatisch, erklaert, laender, quiz, emoji]
 
 permissions:
   contents: write
@@ -46,7 +51,9 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python -m shorts.main ${{ inputs.no_upload && '--no-upload' || '' }}
+        run: |
+          python -m shorts.main ${{ inputs.no_upload && '--no-upload' || '' }} \
+            ${{ inputs.format && inputs.format != 'automatisch' && format('--format {0}', inputs.format) || '' }}
 
       - name: Video zum Hochladen bereitlegen (GitHub-Release)
         if: hashFiles('build/release/tag.txt') != ''
