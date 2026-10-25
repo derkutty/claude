@@ -7,8 +7,8 @@
     "hook": "Wo wird am meisten gearbeitet? Deutschland überrascht!",
     "video_id": "mmgYdZbK5YM",
     "published": "2026-10-24T19:53:04Z",
-    "views": 1182,
-    "likes": 1
+    "views": 1232,
+    "likes": 2
   },
   {
     "date": "2026-10-25T11:24:22+00:00",
@@ -18,8 +18,8 @@
     "hook": "Nur wenige kennen ihren Körper wirklich!",
     "video_id": "1rojHclVNQU",
     "published": "2026-10-25T12:42:06Z",
-    "views": 0,
-    "likes": 0
+    "views": 535,
+    "likes": 3
   },
   {
     "date": "2026-10-25T14:27:20+00:00",
@@ -27,6 +27,14 @@
     "topic": "Märchen der Brüder Grimm",
     "title": "Emoji-Rätsel: Erkennst du diese 4 Märchen? 🧚",
     "hook": "Errätst du alle vier Märchen?",
+    "video_id": null
+  },
+  {
+    "date": "2026-10-25T18:25:05+00:00",
+    "format": "erklaert",
+    "topic": "Spargel-Geruch im Urin",
+    "title": "Warum riecht Pipi nach Spargel – und viele merken es nicht?",
+    "hook": "Spargel gegessen, ab aufs Klo – und plötzlich riecht's komisch. Warum?",
     "video_id": null
   }
 ]
