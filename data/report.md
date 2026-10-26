@@ -4,8 +4,8 @@
 
 | Format | Videos | davon bewertet | Aufrufe nach 3 Tagen (Median) | Bestes Video |
 |---|---|---|---|---|
-| So funktioniert's | 1 | 0 | – | – |
+| So funktioniert's | 2 | 0 | – | – |
 | Länder-Check | 1 | 0 | – | – |
 | Quiz-Rätsel | 1 | 0 | – | – |
 
-Zuletzt aktualisiert: 25.10.2026 18:29 UTC
+Zuletzt aktualisiert: 26.10.2026 11:47 UTC
