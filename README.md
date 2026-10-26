@@ -102,7 +102,7 @@ Das ist der längste Schritt. Google will wissen, welches Programm in deinem Nam
 3. Nach 4–8 Minuten ist der Lauf grün. Draufklicken → unten bei **Artifacts** liegt **short** zum Herunterladen.
    Das ist dein erstes Video.
 
-Ab jetzt erstellt der Kanal jeden Tag um 11:17 und 18:47 Uhr (Winterzeit) von selbst ein Video.
+Ab jetzt erstellt der Kanal jeden Tag gegen 11:30 und 19:30 Uhr (Winterzeit) von selbst ein Video.
 
 ### Schritt 7: Videos veröffentlichen
 

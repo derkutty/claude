@@ -2,9 +2,11 @@ name: Short posten
 
 on:
   schedule:
-    # Zeiten in UTC. 10:17 und 17:47 UTC = 12:17 und 19:47 Uhr deutscher Sommerzeit.
+    # Zeiten in UTC: 10:17 und 18:17 UTC = 11:17 und 19:17 Uhr deutscher Winterzeit.
+    # GitHub startet geplante Läufe oft verspätet; eine geplante Claude-Aufgabe holt sie
+    # 10 Minuten später nach, verspätete Läufe überspringen sich dann selbst.
     - cron: "17 10 * * *"
-    - cron: "47 17 * * *"
+    - cron: "17 18 * * *"
   workflow_dispatch:
     inputs:
       no_upload:
