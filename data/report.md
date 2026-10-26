@@ -6,6 +6,6 @@
 |---|---|---|---|---|
 | So funktioniert's | 2 | 0 | – | – |
 | Länder-Check | 2 | 0 | – | – |
-| Quiz-Rätsel | 1 | 0 | – | – |
+| Quiz-Rätsel | 2 | 0 | – | – |
 
-Zuletzt aktualisiert: 26.10.2026 18:33 UTC
+Zuletzt aktualisiert: 26.10.2026 22:42 UTC
