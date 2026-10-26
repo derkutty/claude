@@ -38,25 +38,32 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: ffmpeg und Schriften installieren
-        timeout-minutes: 15
+      - name: ffmpeg und Schriften einrichten
+        timeout-minutes: 10
         run: |
-          # Die Ubuntu-Paketserver hängen manchmal minutenlang: kurze Zeitlimits und bis zu drei Versuche.
-          APT="-o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20"
-          for i in 1 2 3; do
-            sudo timeout 240 apt-get $APT update && \
-              sudo timeout 240 apt-get $APT install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-inter libraqm0 && \
-              exit 0
-            echo "Versuch $i hat nicht geklappt, neuer Versuch in 15 Sekunden …"
-            sleep 15
-          done
-          exit 1
+          # Bewusst ohne apt-get: Die Ubuntu-Paketserver sind manchmal so langsam, dass ein Lauf
+          # scheitert. ffmpeg kommt als fertiges Programm von GitHub, die Schriften liegen im Repo.
+          curl -sSfL --retry 4 --retry-delay 5 -o "$RUNNER_TEMP/ffmpeg.tar.xz" \
+            https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
+          mkdir -p "$RUNNER_TEMP/ffmpeg"
+          tar -xJf "$RUNNER_TEMP/ffmpeg.tar.xz" -C "$RUNNER_TEMP/ffmpeg" --strip-components=1
+          echo "$RUNNER_TEMP/ffmpeg/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/ffmpeg/bin/ffmpeg" -hide_banner -version | head -1
+          mkdir -p ~/.local/share/fonts
+          cp assets/vendor-fonts/*.ttf assets/vendor-fonts/*.otf ~/.local/share/fonts/
+          fc-cache -f > /dev/null
+          fc-list | grep -ciE "inter|noto color emoji|dejavu"
 
       - run: pip install -r requirements.txt
 
       - name: Chromium für die animierten Formate installieren
         timeout-minutes: 10
-        run: python -m playwright install --with-deps chromium
+        run: |
+          python -m playwright install chromium
+          # Die Systembibliotheken für Chromium sind auf GitHub-Runnern normalerweise schon da;
+          # nur wenn der Start scheitert, werden sie (über die langsamen Paketserver) nachinstalliert.
+          python -c "from playwright.sync_api import sync_playwright as p; b = p().start().chromium.launch(); b.close(); print('Chromium startet')" \
+            || python -m playwright install-deps chromium
 
       - name: Short erzeugen und hochladen
         env:

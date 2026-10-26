@@ -9,7 +9,9 @@ from PIL import Image, ImageDraw, ImageFont, features
 
 from .config import FONTS_DIR
 
-EMOJI_FONT = "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"
+# Mitgelieferte Kopie bevorzugen (siehe assets/vendor-fonts/README.md), sonst die Systemschrift.
+_VENDOR_EMOJI = FONTS_DIR.parent / "vendor-fonts" / "NotoColorEmoji.ttf"
+EMOJI_FONT = str(_VENDOR_EMOJI) if _VENDOR_EMOJI.exists() else "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"
 EMOJI_NATIVE_SIZE = 109  # Noto Color Emoji gibt es nur in dieser Größe; danach wird skaliert.
 
 # Farbverläufe (oben, unten). Pro Video wird einer zufällig gewählt.
