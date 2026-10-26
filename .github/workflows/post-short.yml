@@ -39,11 +39,23 @@ jobs:
           cache: pip
 
       - name: ffmpeg und Schriften installieren
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-inter libraqm0
+        timeout-minutes: 15
+        run: |
+          # Die Ubuntu-Paketserver hängen manchmal minutenlang: kurze Zeitlimits und bis zu drei Versuche.
+          APT="-o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20"
+          for i in 1 2 3; do
+            sudo timeout 240 apt-get $APT update && \
+              sudo timeout 240 apt-get $APT install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji fonts-inter libraqm0 && \
+              exit 0
+            echo "Versuch $i hat nicht geklappt, neuer Versuch in 15 Sekunden …"
+            sleep 15
+          done
+          exit 1
 
       - run: pip install -r requirements.txt
 
       - name: Chromium für die animierten Formate installieren
+        timeout-minutes: 10
         run: python -m playwright install --with-deps chromium
 
       - name: Short erzeugen und hochladen
