@@ -102,7 +102,8 @@ Das ist der längste Schritt. Google will wissen, welches Programm in deinem Nam
 3. Nach 4–8 Minuten ist der Lauf grün. Draufklicken → unten bei **Artifacts** liegt **short** zum Herunterladen.
    Das ist dein erstes Video.
 
-Ab jetzt erstellt der Kanal jeden Tag gegen 11:30 und 19:30 Uhr (Winterzeit) von selbst ein Video.
+Ab jetzt erstellt der Kanal jeden Tag gegen 11:30 und 19:30 Uhr von selbst ein Video. Gestartet werden die Läufe
+von einer geplanten Claude-Aufgabe, weil GitHubs eigener Zeitplan hier regelmäßig Stunden zu spät kam.
 
 ### Schritt 7: Videos veröffentlichen
 
